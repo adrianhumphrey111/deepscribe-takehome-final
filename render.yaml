@@ -14,6 +14,18 @@ services:
         sync: false
       - key: ANTHROPIC_API_KEY
         sync: false
+      - key: CLINICAL_TRIALS_API_URL
+        value: https://clinicaltrials.gov/api/v2
+      - key: ENABLE_CLAUDE_PROVIDER
+        value: true
+      - key: ENABLE_OPENAI_PROVIDER
+        value: true
+      - key: ENABLE_QA_SYSTEM
+        value: true
+      - key: MAX_EXTRACTION_RETRIES
+        value: 3
+      - key: REQUEST_TIMEOUT_MS
+        value: 30000
     healthCheckPath: /api/health
     
   # Next.js Frontend
