@@ -1,0 +1,254 @@
+tags:
+  - Clinical Trials
+summary: Search for matching clinical trials
+description: Search and rank clinical trials based on patient data using ClinicalTrials.gov API. Includes intelligent filtering, geographic proximity ranking, and AI-powered eligibility analysis.
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - patient_data
+      properties:
+        patient_data:
+          type: object
+          description: Patient data object (typically from /extract endpoint)
+          properties:
+            age:
+              type: integer
+              example: 45
+            gender:
+              type: string
+              enum: ["MALE", "FEMALE", "ALL"]
+              example: "FEMALE"
+            primary_diagnosis:
+              type: string
+              example: "breast cancer"
+            conditions:
+              type: array
+              items:
+                type: string
+              example: ["metastatic breast cancer"]
+            comorbidities:
+              type: array
+              items:
+                type: string
+              example: ["diabetes"]
+            medications:
+              type: array
+              items:
+                type: string
+              example: ["tamoxifen", "metformin"]
+            allergies:
+              type: array
+              items:
+                type: string
+              example: ["penicillin"]
+            location:
+              type: object
+              properties:
+                city:
+                  type: string
+                  example: "Boston"
+                state:
+                  type: string
+                  example: "MA"
+                zip_code:
+                  type: string
+                  example: "02101"
+            cancer_stage:
+              type: string
+              example: "Stage IV"
+            tumor_markers:
+              type: object
+              example: {"ER": "positive", "PR": "positive", "HER2": "negative"}
+            tumor_size:
+              type: string
+              example: "2.5 cm"
+        max_results:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 10
+          example: 10
+          description: Maximum number of trials to return
+responses:
+  200:
+    description: Clinical trials found and ranked successfully
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        trials:
+          type: array
+          items:
+            type: object
+            properties:
+              trial:
+                type: object
+                properties:
+                  nct_id:
+                    type: string
+                    example: "NCT12345678"
+                  title:
+                    type: string
+                    example: "Phase III Study of New Breast Cancer Treatment"
+                  status:
+                    type: string
+                    enum: ["RECRUITING", "NOT_YET_RECRUITING", "ACTIVE_NOT_RECRUITING"]
+                    example: "RECRUITING"
+                  phase:
+                    type: string
+                    enum: ["EARLY_PHASE_1", "PHASE_1", "PHASE_2", "PHASE_3", "PHASE_4", "NOT_APPLICABLE"]
+                    example: "PHASE_3"
+                  brief_summary:
+                    type: string
+                    example: "This study evaluates a new targeted therapy for HER2-positive breast cancer..."
+                  detailed_description:
+                    type: string
+                    example: "This is a randomized, double-blind, placebo-controlled study..."
+                  locations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        city:
+                          type: string
+                          example: "Boston"
+                        state:
+                          type: string
+                          example: "Massachusetts"
+                        country:
+                          type: string
+                          example: "United States"
+                        facility:
+                          type: string
+                          example: "Dana-Farber Cancer Institute"
+                  contact_info:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "Dr. Jane Smith"
+                      phone:
+                        type: string
+                        example: "(617) 555-0123"
+                      email:
+                        type: string
+                        example: "clinical.trials@hospital.org"
+                  eligibility_criteria:
+                    type: object
+                    properties:
+                      age_min:
+                        type: integer
+                        example: 18
+                      age_max:
+                        type: integer
+                        example: 80
+                      gender:
+                        type: string
+                        example: "ALL"
+                      healthy_volunteers:
+                        type: boolean
+                        example: false
+                      inclusion_criteria:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Confirmed diagnosis of breast cancer", "Age 18 or older"]
+                      exclusion_criteria:
+                        type: array
+                        items:
+                          type: string
+                        example: ["Pregnant or nursing", "Previous treatment with study drug"]
+                  study_type:
+                    type: string
+                    example: "INTERVENTIONAL"
+                  primary_outcome:
+                    type: string
+                    example: "Overall survival at 5 years"
+                  secondary_outcomes:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Progression-free survival", "Quality of life scores"]
+                  enrollment_target:
+                    type: integer
+                    example: 500
+                  sponsor:
+                    type: string
+                    example: "Pharmaceutical Company Inc."
+              match_score:
+                type: number
+                minimum: 0
+                maximum: 1
+                example: 0.85
+                description: AI-calculated match score based on patient eligibility
+              match_factors:
+                type: array
+                items:
+                  type: string
+                example: ["Primary diagnosis match", "Age eligible", "Geographic proximity"]
+              reasoning:
+                type: string
+                example: "High match due to exact diagnosis match, patient age within range, and trial location in same state."
+        total_found:
+          type: integer
+          example: 7
+        search_metadata:
+          type: object
+          properties:
+            query_used:
+              type: string
+              example: "breast cancer"
+            search_time_ms:
+              type: integer
+              example: 2150
+            patient_location:
+              type: object
+              properties:
+                city:
+                  type: string
+                  example: "Boston"
+                state:
+                  type: string
+                  example: "MA"
+                zip_code:
+                  type: string
+                  example: "02101"
+  400:
+    description: Invalid request - patient data missing or malformed
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error_message:
+          type: string
+          example: "Patient data is required"
+  500:
+    description: Internal server error during trial search
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error_message:
+          type: string
+          example: "Trial search failed: API timeout"
+  503:
+    description: Service unavailable - required services not available
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error_message:
+          type: string
+          example: "Trial search services are not available"

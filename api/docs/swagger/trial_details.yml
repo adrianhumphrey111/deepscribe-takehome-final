@@ -1,0 +1,66 @@
+tags:
+  - Clinical Trials
+summary: Get detailed information about a specific trial
+description: Retrieve comprehensive details about a clinical trial by its NCT ID
+parameters:
+  - name: trial_id
+    in: path
+    required: true
+    type: string
+    description: NCT ID of the clinical trial
+    example: "NCT12345678"
+responses:
+  200:
+    description: Trial details retrieved successfully
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        trial:
+          type: object
+          properties:
+            nct_id:
+              type: string
+              example: "NCT12345678"
+            title:
+              type: string
+              example: "Phase III Trial of New Breast Cancer Treatment"
+            detailed_description:
+              type: string
+              example: "This is a randomized, double-blind, placebo-controlled trial investigating the efficacy and safety of a novel targeted therapy in patients with HER2-positive metastatic breast cancer who have received prior trastuzumab-based therapy."
+            status:
+              type: string
+              example: "RECRUITING"
+            phase:
+              type: string
+              example: "PHASE_3"
+            primary_outcome:
+              type: string
+              example: "Overall survival at 5 years"
+            secondary_outcomes:
+              type: array
+              items:
+                type: string
+              example: ["Progression-free survival", "Quality of life scores", "Safety and tolerability"]
+            enrollment_target:
+              type: integer
+              example: 500
+            estimated_completion:
+              type: string
+              example: "2025-12-31"
+            sponsor:
+              type: string
+              example: "Research University"
+  500:
+    description: Internal server error
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error_message:
+          type: string
+          example: "Error retrieving trial details"
