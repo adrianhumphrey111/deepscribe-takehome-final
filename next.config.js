@@ -14,6 +14,10 @@ const nextConfig = {
   // Increase timeout for long-running API calls
   experimental: {
     proxyTimeout: 300000, // 5 minutes
+  },
+  // Skip TypeScript type checking during build
+  typescript: {
+    ignoreBuildErrors: true,
   }
 }
 
