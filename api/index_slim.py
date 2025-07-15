@@ -9,7 +9,7 @@ from config import Config
 from services.patient_extractor import PatientDataExtractor
 from services.trials_client import ClinicalTrialsClient
 from services.ranking_engine import TrialRankingEngine
-# Skip QA service - it uses heavy LangChain dependencies
+from services.simple_qa_service import SimpleQAService
 from models.patient_data import PatientData
 import time
 import logging
@@ -94,9 +94,13 @@ except Exception as e:
     logger.error(f"Failed to initialize ranking engine: {e}")
     ranking_engine = None
 
-# Skip QA service initialization - too heavy
-qa_service = None
-logger.info("QA service disabled in slim build")
+# Initialize lightweight QA service
+try:
+    qa_service = SimpleQAService(config)
+    logger.info("Simple Q&A service initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize Q&A service: {e}")
+    qa_service = None
 
 @app.route("/api/health", methods=["GET"])
 def health_check():
@@ -110,7 +114,7 @@ def health_check():
             "has_anthropic_key": bool(config.ANTHROPIC_API_KEY),
             "claude_enabled": config.ENABLE_CLAUDE_PROVIDER,
             "openai_enabled": config.ENABLE_OPENAI_PROVIDER,
-            "qa_enabled": False  # Disabled in slim build
+            "qa_enabled": bool(qa_service)
         }
     })
 
@@ -260,11 +264,48 @@ def search_trials():
 
 @app.route("/api/trials/qa", methods=["POST"])
 def trial_qa():
-    """QA endpoint - disabled in slim build"""
-    return jsonify({
-        "success": False,
-        "error_message": "Q&A service is disabled in slim build to reduce dependencies. Please use the full build for Q&A features."
-    }), 503
+    """Answer questions about clinical trials using lightweight Q&A"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'trial_id' not in data or 'question' not in data:
+            return jsonify({
+                "success": False,
+                "error_message": "Trial ID and question are required"
+            }), 400
+        
+        trial_id = data['trial_id']
+        question = data['question']
+        patient_context = data.get('patient_context')
+        
+        if not qa_service:
+            return jsonify({
+                "success": False,
+                "error_message": "Q&A service is not available. Please check your API keys."
+            }), 503
+        
+        try:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            result = loop.run_until_complete(
+                qa_service.answer_question(trial_id, question, patient_context)
+            )
+            loop.close()
+        except Exception as e:
+            logger.error(f"Error during Q&A processing: {str(e)}")
+            return jsonify({
+                "success": False,
+                "error_message": f"Q&A processing failed: {str(e)}"
+            }), 500
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error in trial_qa: {str(e)}")
+        return jsonify({
+            "success": False,
+            "error_message": str(e)
+        }), 500
 
 @app.route("/api/python")
 def hello_world():
