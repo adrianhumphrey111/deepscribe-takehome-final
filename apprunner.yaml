@@ -3,13 +3,14 @@ runtime: python3
 build:
   commands:
     pre-build:
-      - echo "Installing Node.js and pnpm..."
-      - curl -fsSL https://fnm.vercel.app/install | bash
-      - source ~/.bashrc
-      - fnm use --install-if-missing 20
+      - echo "Installing Node.js..."
+      - curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+      - sudo apt-get install -y nodejs
+      - npm --version
+      - node --version
       - npm install -g pnpm
       - echo "Building Next.js frontend..."
-      - pnpm install
+      - pnpm install --frozen-lockfile
       - pnpm build
       - echo "Frontend build completed"
     build:
