@@ -2,31 +2,20 @@ version: 1.0
 runtime: python3
 build:
   commands:
-    pre-build:
-      - echo "Installing Node.js..."
-      - curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-      - sudo apt-get install -y nodejs
-      - npm --version
-      - node --version
-      - npm install -g pnpm
-      - echo "Building Next.js frontend..."
-      - pnpm install --frozen-lockfile
-      - pnpm build
-      - echo "Frontend build completed"
     build:
       - echo "Installing Python dependencies..."
       - pip install -r requirements.txt
-      - echo "Python dependencies installed"
 run:
-  runtime-version: python3
-  command: gunicorn --bind 0.0.0.0:8000 --workers 2 --timeout 120 api.index:app
+  runtime-version: 3.11
+  command: gunicorn --bind 0.0.0.0:8000 --workers 1 --timeout 300 api.index:app
   network:
     port: 8000
+    env: PORT
   env:
     - name: FLASK_ENV
       value: production
-    - name: PYTHONPATH
-      value: ./api
+    - name: PORT
+      value: "8000"
     - name: CLINICAL_TRIALS_API_URL
       value: https://clinicaltrials.gov/api/v2
     - name: ENABLE_CLAUDE_PROVIDER
