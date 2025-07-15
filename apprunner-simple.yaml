@@ -1,22 +1,21 @@
 version: 1.0
-runtime: python311
+runtime: python3
 build:
   commands:
     build:
-      - echo "No build steps required for this app."
+      - echo "Installing Python dependencies..."
+      - pip install -r requirements.txt
+      - echo "Python dependencies installed"
 run:
-  runtime-version: 3.11.12
-  pre-run:
-    - pip3 install -r requirements-slim.txt
-  command: gunicorn --bind 0.0.0.0:8000 --workers 1 --timeout 300 api.index_slim:app
+  runtime-version: python3
+  command: gunicorn --bind 0.0.0.0:8000 --workers 2 --timeout 120 api.index:app
   network:
     port: 8000
-    env: PORT
   env:
     - name: FLASK_ENV
       value: production
-    - name: PORT
-      value: "8000"
+    - name: PYTHONPATH
+      value: ./api
     - name: CLINICAL_TRIALS_API_URL
       value: https://clinicaltrials.gov/api/v2
     - name: ENABLE_CLAUDE_PROVIDER

@@ -1,0 +1,25 @@
+# Slim requirements - removes heavy LangChain dependencies
+Flask==3.0.3
+python-dotenv==1.0.0
+requests==2.31.0
+openai
+anthropic
+flask-cors==4.0.0
+pydantic
+typing-extensions
+flasgger==0.9.7.1
+gunicorn==21.2.0
+
+# Testing (optional - can remove for even slimmer build)
+pytest==8.3.3
+pytest-mock==3.12.0
+pytest-flask==1.3.0
+
+# Removed heavy dependencies:
+# langchain==0.1.20           # ~50MB+ with dependencies
+# langchain-community==0.0.38 # Large
+# langchain-openai==0.1.7     # Large  
+# langchain-anthropic==0.1.11 # Large
+# faiss-cpu==1.8.0            # ~30MB
+# sentence-transformers==2.7.0 # ~200MB+ (includes PyTorch)
+# tiktoken==0.7.0             # Can use openai's built-in tokenization

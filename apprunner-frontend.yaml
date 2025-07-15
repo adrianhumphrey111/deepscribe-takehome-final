@@ -1,0 +1,21 @@
+version: 1.0
+runtime: nodejs20
+build:
+  commands:
+    build:
+      - echo "Installing Node.js dependencies..."
+      - npm install -g pnpm
+      - pnpm install
+      - echo "Building Next.js application..."
+      - NODE_ENV=production pnpm build
+run:
+  runtime-version: 20
+  command: pnpm start
+  network:
+    port: 3000
+    env: PORT
+  env:
+    - name: NODE_ENV
+      value: production
+    - name: PORT
+      value: "3000"
