@@ -34,3 +34,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 __pycache__
+
+
+deploy-apprunner.sh
+deploy-aws.sh
+aws-ecs-task-definition.json
+docker-compose.yml
+Dockerfile.*
+build.sh
+requirements-dev.txt
+requirements-vercel.txt

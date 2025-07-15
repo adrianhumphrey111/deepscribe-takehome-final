@@ -1,0 +1,30 @@
+version: 1.0
+runtime: python3.11
+build:
+  commands:
+    build:
+      - echo "Installing dependencies..."
+      - pip install -r requirements.txt
+      - echo "Build completed"
+run:
+  runtime-version: python3.11
+  command: gunicorn --bind 0.0.0.0:8000 --workers 2 --timeout 120 api.index:app
+  network:
+    port: 8000
+  env:
+    - name: FLASK_ENV
+      value: production
+    - name: PYTHONPATH
+      value: ./api
+    - name: CLINICAL_TRIALS_API_URL
+      value: https://clinicaltrials.gov/api/v2
+    - name: ENABLE_CLAUDE_PROVIDER
+      value: true
+    - name: ENABLE_OPENAI_PROVIDER
+      value: true
+    - name: ENABLE_QA_SYSTEM
+      value: true
+    - name: MAX_EXTRACTION_RETRIES
+      value: 3
+    - name: REQUEST_TIMEOUT_MS
+      value: 30000

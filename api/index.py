@@ -16,18 +16,27 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-# Allow CORS for development and Render deployment
+# Allow CORS for development and production
 allowed_origins = [
     "http://localhost:3000",
     "https://clinical-trials-matcher.vercel.app"
 ]
 
-# Add Render frontend URL if available
+# Add production URLs if available
 import os
 if os.getenv('RENDER_EXTERNAL_URL'):
     allowed_origins.append(os.getenv('RENDER_EXTERNAL_URL'))
 
-CORS(app, origins=allowed_origins)
+# For App Runner deployment, allow all origins in production
+if os.getenv('FLASK_ENV') == 'production':
+    CORS(app, origins="*")
+else:
+    CORS(app, origins=allowed_origins)
+
+# Set up static file serving for production
+if os.getenv('FLASK_ENV') == 'production':
+    from static_server import setup_static_routes
+    setup_static_routes(app)
 
 # Initialize Swagger
 swagger_config = {
