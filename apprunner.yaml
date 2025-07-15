@@ -2,10 +2,20 @@ version: 1.0
 runtime: python3.11
 build:
   commands:
+    pre-build:
+      - echo "Installing Node.js and pnpm..."
+      - curl -fsSL https://fnm.vercel.app/install | bash
+      - source ~/.bashrc
+      - fnm use --install-if-missing 20
+      - npm install -g pnpm
+      - echo "Building Next.js frontend..."
+      - pnpm install
+      - pnpm build
+      - echo "Frontend build completed"
     build:
-      - echo "Installing dependencies..."
+      - echo "Installing Python dependencies..."
       - pip install -r requirements.txt
-      - echo "Build completed"
+      - echo "Python dependencies installed"
 run:
   runtime-version: python3.11
   command: gunicorn --bind 0.0.0.0:8000 --workers 2 --timeout 120 api.index:app
@@ -19,12 +29,12 @@ run:
     - name: CLINICAL_TRIALS_API_URL
       value: https://clinicaltrials.gov/api/v2
     - name: ENABLE_CLAUDE_PROVIDER
-      value: true
+      value: "true"
     - name: ENABLE_OPENAI_PROVIDER
-      value: true
+      value: "true"
     - name: ENABLE_QA_SYSTEM
-      value: true
+      value: "true"
     - name: MAX_EXTRACTION_RETRIES
-      value: 3
+      value: "3"
     - name: REQUEST_TIMEOUT_MS
-      value: 30000
+      value: "30000"
