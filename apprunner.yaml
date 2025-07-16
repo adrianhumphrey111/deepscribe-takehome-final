@@ -5,14 +5,13 @@ build:
   commands:
     build:
       - echo "Installing dependencies..."
-      - npm install -g pnpm
-      - pnpm install --frozen-lockfile
+      - npm install
       - echo "Building Next.js application..."
-      - NODE_ENV=production pnpm build
+      - NODE_ENV=production npm run build
 
 run:
   runtime-version: 22.14.0
-  command: pnpm start
+  command: npm start
   network:
     port: 3000
     env: PORT
