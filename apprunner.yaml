@@ -31,6 +31,6 @@ run:
       value: "30000"
   secrets:
     - name: OPENAI_API_KEY
-      value-from: "arn:aws:secretsmanager:us-east-1:822267358548:secret:clinical-trials/openai-api-key-Pb97mT"
+      value-from: arn:aws:secretsmanager:us-east-1:822267358548:secret:clinical-trials/openai-api-key-Pb97mT
     - name: ANTHROPIC_API_KEY
-      value-from: "arn:aws:secretsmanager:us-east-1:822267358548:secret:clinical-trials/anthropic-api-key-JsBsHX"
+      value-from: arn:aws:secretsmanager:us-east-1:822267358548:secret:clinical-trials/anthropic-api-key-JsBsHX
