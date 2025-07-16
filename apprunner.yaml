@@ -7,7 +7,7 @@ build:
       - echo "Installing dependencies..."
       - npm install
       - echo "Building Next.js application..."
-      - NODE_ENV=production NEXT_PUBLIC_API_URL=https://ue93wnfzm6.us-east-1.awsapprunner.com npm run build
+      - NODE_ENV=production npm run build
 
 run:
   runtime-version: 22.14.0
@@ -20,7 +20,5 @@ run:
       value: production
     - name: PORT
       value: "3000"
-    - name: HOST
-      value: "0.0.0.0"
     - name: NEXT_PUBLIC_API_URL
       value: "https://ue93wnfzm6.us-east-1.awsapprunner.com"
