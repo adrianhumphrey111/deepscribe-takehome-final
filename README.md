@@ -141,6 +141,42 @@ pnpm flask-dev   # Backend only (port 5328)
 
 The application will be available at `http://localhost:3000`
 
+## 🌐 Live Demo
+
+**Frontend Application:** [https://i9v8d8f32e.us-east-1.awsapprunner.com/](https://i9v8d8f32e.us-east-1.awsapprunner.com/)
+
+**Backend API:** [https://ue93wnfzm6.us-east-1.awsapprunner.com/](https://ue93wnfzm6.us-east-1.awsapprunner.com/)
+
+### Demo Instructions
+
+1. **Access the Application**: Visit the frontend URL above
+2. **Upload a Transcript**: Use the transcript input area to paste or type a medical transcript
+3. **AI Processing**: The system will automatically extract patient data using AI
+4. **Review & Edit**: Review the extracted information and make any necessary corrections
+5. **Find Trials**: Click "Find Clinical Trials" to search for matching studies
+6. **Explore Results**: Browse through ranked trial results with match scores
+7. **Trial Details**: Click on any trial card to view detailed information
+8. **Ask Questions**: Use the Q&A feature to ask specific questions about trials
+
+### Sample Transcript
+
+Try this sample transcript to see the system in action:
+
+```
+Patient is a 45-year-old female from Austin, Texas with newly diagnosed Stage II breast cancer. 
+Patient reports no significant past medical history. Current medications include none. 
+Patient is interested in clinical trials and willing to travel within 100 miles for treatment.
+Patient has estrogen receptor positive, HER2 negative tumor markers.
+```
+
+### Deployment Architecture
+
+- **Frontend**: Next.js deployed on AWS App Runner (Node.js 22)
+- **Backend**: Flask API deployed on AWS App Runner (Python 3.11)
+- **AI Services**: OpenAI GPT-4 and Anthropic Claude 3.5 Sonnet
+- **Data Source**: ClinicalTrials.gov public API
+- **Features**: RAG-based search, intelligent LLM routing, geographic proximity matching
+
 ## 🧪 Testing
 
 ### Backend Tests
