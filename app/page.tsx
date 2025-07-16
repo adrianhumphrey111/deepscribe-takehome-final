@@ -8,6 +8,7 @@ import { ProcessingStatus } from '@/components/transcript/ProcessingStatus'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Stethoscope, Users, Target } from 'lucide-react'
+import { apiCall } from '@/lib/api'
 
 export default function Home() {
   const [currentStep, setCurrentStep] = useState<'input' | 'processing' | 'review' | 'results'>('input')
@@ -28,9 +29,8 @@ export default function Home() {
 
     try {
       // Extract patient data
-      const extractResponse = await fetch('/api/extract', {
+      const extractResponse = await apiCall('/api/extract', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ transcript: transcriptText })
       })
 
@@ -72,9 +72,8 @@ export default function Home() {
 
       // Step 2: Make the actual API call
       setProgressPercent(30)
-      const searchResponse = await fetch('/api/trials/search', {
+      const searchResponse = await apiCall('/api/trials/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ patient_data: confirmedData })
       })
 

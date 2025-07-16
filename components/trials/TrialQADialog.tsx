@@ -10,6 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { MessageSquare, Send, Bot, User, Clock, AlertCircle, Sparkles } from 'lucide-react'
+import { apiCall } from '@/lib/api'
 
 interface TrialQADialogProps {
   trial: any
@@ -78,9 +79,8 @@ export function TrialQADialog({ trial, open, onOpenChange, patientData }: TrialQ
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/trials/qa', {
+      const response = await apiCall('/api/trials/qa', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           trial_id: trial?.trial?.nct_id || '',
           question: inputValue,
