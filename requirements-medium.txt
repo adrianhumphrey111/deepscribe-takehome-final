@@ -1,0 +1,27 @@
+# Medium requirements - keeps RAG but optimizes dependencies
+Flask==3.0.3
+python-dotenv==1.0.0
+requests==2.31.0
+openai
+anthropic
+flask-cors==4.0.0
+pydantic
+typing-extensions
+flasgger==0.9.7.1
+gunicorn==21.2.0
+
+# For RAG functionality (optimized)
+faiss-cpu==1.8.0  # Required for vector search
+numpy  # Required for faiss
+tiktoken==0.7.0  # For tokenization
+
+# Minimal LangChain - just what we need
+langchain-core
+langchain-openai  # For embeddings
+langchain-community  # For FAISS vectorstore
+
+# Skip these heavy ones:
+# sentence-transformers  # Not needed if using OpenAI embeddings
+# torch  # Not needed without sentence-transformers
+# langchain  # Use specific packages instead
+# langchain-anthropic  # Not needed for RAG
