@@ -193,7 +193,7 @@ export function TrialDetailsDialog({
                             Secondary Outcomes
                           </h4>
                           <ul className="text-sm text-gray-600 dark:text-gray-300 list-disc list-inside space-y-1">
-                            {trialData.secondary_outcomes.map((outcome, index) => (
+                            {(trialData.secondary_outcomes || []).map((outcome: string, index: number) => (
                               <li key={index}>{outcome}</li>
                             ))}
                           </ul>
@@ -255,7 +255,7 @@ export function TrialDetailsDialog({
                             Inclusion Criteria
                           </h4>
                           <ul className="text-sm text-gray-600 dark:text-gray-300 list-disc list-inside space-y-1">
-                            {trialData.eligibility_criteria.inclusion_criteria.map((criterion, index) => (
+                            {(trialData.eligibility_criteria?.inclusion_criteria || []).map((criterion: string, index: number) => (
                               <li key={index}>{criterion}</li>
                             ))}
                           </ul>
@@ -269,7 +269,7 @@ export function TrialDetailsDialog({
                             Exclusion Criteria
                           </h4>
                           <ul className="text-sm text-gray-600 dark:text-gray-300 list-disc list-inside space-y-1">
-                            {trialData.eligibility_criteria.exclusion_criteria.map((criterion, index) => (
+                            {(trialData.eligibility_criteria?.exclusion_criteria || []).map((criterion: string, index: number) => (
                               <li key={index}>{criterion}</li>
                             ))}
                           </ul>
@@ -289,7 +289,7 @@ export function TrialDetailsDialog({
                     <TabsContent value="locations" className="space-y-4 mt-6">
                       {trialData.locations?.length > 0 ? (
                   <div className="space-y-4">
-                    {trialData.locations.map((location, index) => (
+                    {(trialData.locations || []).map((location: any, index: number) => (
                       <Card key={index} className="p-4">
                         <div className="flex items-start space-x-3">
                           <MapPin className="h-5 w-5 text-blue-600 mt-1" />
@@ -367,15 +367,15 @@ export function TrialDetailsDialog({
                     Match Factors Breakdown
                   </h3>
                   <div className="space-y-3">
-                    {Object.entries(matchFactors).map(([factor, score]) => (
+                    {Object.entries(matchFactors || {}).map(([factor, score]) => (
                       <div key={factor} className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <span className="text-sm font-medium capitalize">
                             {factor.replace('_', ' ')}
                           </span>
                           <div className={`h-3 w-3 rounded-full ${
-                            score > 0.7 ? 'bg-green-500' : 
-                            score > 0.4 ? 'bg-yellow-500' : 
+                            (score as number) > 0.7 ? 'bg-green-500' : 
+                            (score as number) > 0.4 ? 'bg-yellow-500' : 
                             'bg-red-500'
                           }`} />
                         </div>
@@ -383,15 +383,15 @@ export function TrialDetailsDialog({
                           <div className="w-24 bg-gray-200 rounded-full h-2">
                             <div 
                               className={`h-2 rounded-full ${
-                                score > 0.7 ? 'bg-green-500' : 
-                                score > 0.4 ? 'bg-yellow-500' : 
+                                (score as number) > 0.7 ? 'bg-green-500' : 
+                                (score as number) > 0.4 ? 'bg-yellow-500' : 
                                 'bg-red-500'
                               }`}
-                              style={{ width: `${score * 100}%` }}
+                              style={{ width: `${(score as number) * 100}%` }}
                             />
                           </div>
                           <span className="text-sm font-medium">
-                            {Math.round(score * 100)}%
+                            {Math.round((score as number) * 100)}%
                           </span>
                         </div>
                       </div>

@@ -12,10 +12,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
 import { CheckCircle, AlertCircle, Edit3, User, MapPin, Pill, Activity, RefreshCw } from 'lucide-react'
 import { ProcessingStatus } from './ProcessingStatus'
+import { PatientData, ExtractionResult } from '@/lib/types'
 
 interface ExtractionReviewProps {
-  extractedData: any
-  onConfirm: (data: any) => void
+  extractedData: ExtractionResult
+  onConfirm: (data: PatientData) => void
   onStartOver: () => void
   processing: boolean
   progressStep?: string
@@ -24,18 +25,18 @@ interface ExtractionReviewProps {
 }
 
 export function ExtractionReview({ extractedData, onConfirm, onStartOver, processing, progressStep, progressMessage, progressPercent }: ExtractionReviewProps) {
-  const [editedData, setEditedData] = useState(extractedData?.patient_data || {})
+  const [editedData, setEditedData] = useState<PatientData>(extractedData?.patient_data || {})
   const [isEditing, setIsEditing] = useState(false)
 
-  const handleFieldChange = (field: string, value: any) => {
-    setEditedData(prev => ({
+  const handleFieldChange = (field: keyof PatientData, value: any) => {
+    setEditedData((prev: PatientData) => ({
       ...prev,
       [field]: value
     }))
   }
 
-  const handleLocationChange = (field: string, value: string) => {
-    setEditedData(prev => ({
+  const handleLocationChange = (field: keyof NonNullable<PatientData['location']>, value: string) => {
+    setEditedData((prev: PatientData) => ({
       ...prev,
       location: {
         ...prev.location,
@@ -44,24 +45,24 @@ export function ExtractionReview({ extractedData, onConfirm, onStartOver, proces
     }))
   }
 
-  const handleArrayFieldChange = (field: string, index: number, value: string) => {
-    setEditedData(prev => ({
+  const handleArrayFieldChange = (field: keyof Pick<PatientData, 'conditions' | 'medications' | 'allergies' | 'comorbidities' | 'previous_treatments'>, index: number, value: string) => {
+    setEditedData((prev: PatientData) => ({
       ...prev,
-      [field]: prev[field].map((item, i) => i === index ? value : item)
+      [field]: (prev[field] as string[])?.map((item: string, i: number) => i === index ? value : item) || []
     }))
   }
 
-  const addArrayItem = (field: string) => {
-    setEditedData(prev => ({
+  const addArrayItem = (field: keyof Pick<PatientData, 'conditions' | 'medications' | 'allergies' | 'comorbidities' | 'previous_treatments'>) => {
+    setEditedData((prev: PatientData) => ({
       ...prev,
-      [field]: [...(prev[field] || []), '']
+      [field]: [...((prev[field] as string[]) || []), '']
     }))
   }
 
-  const removeArrayItem = (field: string, index: number) => {
-    setEditedData(prev => ({
+  const removeArrayItem = (field: keyof Pick<PatientData, 'conditions' | 'medications' | 'allergies' | 'comorbidities' | 'previous_treatments'>, index: number) => {
+    setEditedData((prev: PatientData) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
+      [field]: (prev[field] as string[])?.filter((_: string, i: number) => i !== index) || []
     }))
   }
 

@@ -1,20 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  rewrites: async () => {
-    return [
-      {
-        source: '/api/:path*',
-        destination:
-          process.env.NODE_ENV === 'development'
-            ? 'http://127.0.0.1:5328/api/:path*'
-            : `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
-      },
-    ]
-  },
-  // Skip TypeScript type checking during build
+  // Enable TypeScript checking
   typescript: {
-    ignoreBuildErrors: true,
-  }
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+  // Disable minification for debugging
+  swcMinify: false,
+  compiler: {
+    removeConsole: false,
+  },
+  // Add webpack config to disable minification
+  webpack: (config, { dev, isServer }) => {
+    if (!dev) {
+      config.optimization.minimize = false;
+    }
+    return config;
+  },
 }
 
 module.exports = nextConfig

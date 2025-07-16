@@ -121,7 +121,7 @@ function TopMatchCard({ trial, rank, onSelect, onSave, onQA, isSaved }: TopMatch
               <MapPin className="h-4 w-4 flex-shrink-0" />
               <span className="font-medium">Locations:</span>
               <div className="flex flex-wrap gap-1">
-                {trial.trial.locations.slice(0, 3).map((location, locIndex) => (
+                {(trial.trial.locations || []).slice(0, 3).map((location: any, locIndex: number) => (
                   <Badge key={locIndex} variant="outline" className="text-xs">
                     {location.city}, {location.state}
                   </Badge>
@@ -145,19 +145,19 @@ function TopMatchCard({ trial, rank, onSelect, onSave, onQA, isSaved }: TopMatch
         {/* Match factors */}
         <div className="space-y-3">
           <div className="grid grid-cols-3 gap-4">
-            {Object.entries(trial.match_factors).map(([factor, score]) => (
+            {Object.entries(trial.match_factors || {}).map(([factor, score]) => (
               <div key={factor} className="text-center">
                 <div className="text-xs text-gray-500 mb-1 capitalize">
                   {factor.replace('_', ' ')}:
                 </div>
                 <div className="flex items-center justify-center gap-1">
                   <div className={`h-2 w-2 rounded-full ${
-                    score > 0.7 ? 'bg-green-500' : 
-                    score > 0.4 ? 'bg-yellow-500' : 
+                    (score as number) > 0.7 ? 'bg-green-500' : 
+                    (score as number) > 0.4 ? 'bg-yellow-500' : 
                     'bg-red-500'
                   }`} />
                   <span className="text-sm font-medium">
-                    {Math.round(score * 100)}%
+                    {Math.round((score as number) * 100)}%
                   </span>
                 </div>
               </div>
